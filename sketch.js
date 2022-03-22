@@ -25,7 +25,8 @@ function draw() {
   if(lifeCount === lifespan) {
     generation++;
     lifeCount = 0;
-    population = new Population();
+    population.evaluate();
+    population.selection();
   }
 
   genPar.html("Generation: " + generation);
