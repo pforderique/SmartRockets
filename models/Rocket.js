@@ -1,7 +1,8 @@
 class Rocket {
     constructor() {
         this.pos = createVector(width/2, height);
-        this.vel = createVector(0, -1);
+        // this.vel = createVector(0, -1);
+        this.vel = p5.Vector.random2D();
         this.acc = createVector();
     }
 
@@ -15,11 +16,23 @@ class Rocket {
     }
 
     show() {
+        const bodyWidth = 10;
+        const bodyHeight = 50;
+        const tipHeight = 10;
+
         push();
+        noStroke();
+        fill(255, 150);
+        // translate to make drawing easier
         translate(this.pos.x, this.pos.y);
-        rotate(this.vel.heading);
+        rotate(this.vel.heading());
         rectMode(CENTER);
-        rect(0, 0, 10, 50);
+        rect(0, 0, bodyHeight, bodyWidth); // body
+        triangle(
+            bodyHeight/2, -bodyWidth/2, 
+            bodyHeight/2, bodyWidth/2, 
+            bodyHeight/2 + tipHeight, 0
+        ); // tip
         pop();
     }
   }
