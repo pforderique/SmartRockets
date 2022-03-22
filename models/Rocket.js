@@ -13,12 +13,13 @@ class Rocket {
     update() {
         this.vel.add(this.acc);
         this.pos.add(this.vel);
+        this.acc.mult(0);
     }
 
     show() {
-        const bodyWidth = 10;
-        const bodyHeight = 50;
-        const tipHeight = 10;
+        const bodyWidth = 5;
+        const bodyHeight = 25;
+        const tipHeight = 5;
 
         push();
         noStroke();
