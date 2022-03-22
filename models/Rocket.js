@@ -1,9 +1,9 @@
 class Rocket {
     constructor() {
         this.pos = createVector(width/2, height);
-        // this.vel = createVector(0, -1);
-        this.vel = p5.Vector.random2D();
+        this.vel = createVector();
         this.acc = createVector();
+        this.dna = new DNA();
     }
 
     applyForce(force) {
@@ -11,6 +11,9 @@ class Rocket {
     }
   
     update() {
+        this.applyForce(this.dna.genes[lifeCount]);
+        this.count++;
+
         this.vel.add(this.acc);
         this.pos.add(this.vel);
         this.acc.mult(0);
