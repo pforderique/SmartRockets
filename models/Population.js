@@ -7,16 +7,21 @@ class Population {
     for (let i = 0; i < this.popsize; ++i) {
       this.rockets.push(new Rocket());
     }
+    print("ONIT")
+    print(this.rockets)
   }
 
   evaluate() {
     // 1. calculate the fitness of every member in the population and normalize
-    const maxFit = this.rockets.reduce((maxFitness, rocket) =>
-      max(maxFitness, rocket.calculateFitness())
-    );
-    maxFit > 0
-      ? this.rockets.forEach((rocket) => (rocket.fitness /= maxFit))
-      : 0;
+    let maximumFitness = 0
+    this.rockets.forEach(rocket => {
+        maximumFitness = Math.max(maximumFitness, rocket.calculateFitness())
+    })
+
+    maximumFitness > 0
+    ? this.rockets.forEach((rocket) => (rocket.fitness /= maximumFitness))
+    : 0;
+    print("MAX FITNESS: " + round2Dec(maximumFitness));
 
     // 2. establish the mating pool
     this.matingpool = [];
