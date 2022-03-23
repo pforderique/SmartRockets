@@ -20,15 +20,15 @@ class Rocket {
   }
 
   calculateFitness() {
-    const crashPenalty = 0.05; // reduce 95% of fitness
+    const crashPenalty = 0.1; // reduce 90% of fitness
     const successGain = 2; // double fitness of those who reached
 
     // normally, fitness = inverse of distance to target
     const distance = this.distanceToTarget();
-    this.fitness = distance === 0 ? Number.MAX_SAFE_INTEGER : 1 / distance;
+    this.fitness = distance === 0 ? Number.MAX_SAFE_INTEGER : 1000 / distance;
 
     // plus a time metric
-    if (this.succeeded) this.fitness += 1 / this.successTimer;
+    if (this.succeeded) this.fitness *= (1 + 100 / this.successTimer);
 
     // reduce the fitness of rockets that have crashed!
     if (this.crashed) this.fitness *= crashPenalty;

@@ -7,8 +7,8 @@ let generation = 1;
 let maxForce = 0.15;
 let state;
 let obstacleStartX, obstacleStartY;
-let genPar;
-let lifePar;
+let bestFitnessSeen = 0;
+let genPar, lifePar, fitnessPar
 
 const states = {
   WELCOME: 0,
@@ -21,8 +21,7 @@ function setup() {
   population = new Population();
   target = new Target();
   state = states.SIMULATION;
-  genPar = createP();
-  lifePar = createP();
+  [genPar, lifePar, fitnessPar] = [createP(), createP(), createP()]; 
 }
 
 function draw() {
@@ -44,6 +43,7 @@ function draw() {
   obstacles.forEach((obstacle) => obstacle.show());
   genPar.html("Generation: " + generation);
   lifePar.html("Life Count: " + lifeCount);
+  fitnessPar.html("Best Fitness Seen: " + roundDec(bestFitnessSeen, 5));
 }
 
 function updateSimulation() {
@@ -72,7 +72,6 @@ function mouseReleased() {
       obstacles.push(
         new Obstacle(obstacleStartX, obstacleStartY, mouseX, mouseY)
       );
-      print(obstacles);
       break;
   }
 }

@@ -1,6 +1,6 @@
 class DNA {
   constructor(newGenes = undefined) {
-    this.mutationRate = 0.02;
+    this.mutationRate = 0.01;
 
     if (newGenes) {
       this.genes = newGenes;
