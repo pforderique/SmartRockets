@@ -19,7 +19,7 @@ class Rocket {
   }
 
   update() {
-    const reachedThreshold = 10;
+    const reachedThreshold = 6;
     if (this.distanceToTarget() < reachedThreshold) {
       this.completed = true;
       this.pos = target.target.copy();

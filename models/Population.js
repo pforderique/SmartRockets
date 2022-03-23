@@ -43,9 +43,14 @@ class Population {
     });
   }
 
-  run() {
+  update() {
     for (let i = 0; i < this.popsize; ++i) {
       this.rockets[i].update();
+    }
+  }
+
+  show() {
+    for (let i = 0; i < this.popsize; ++i) {
       this.rockets[i].show();
     }
   }
