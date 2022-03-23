@@ -2,13 +2,11 @@ class Population {
   constructor() {
     this.rockets = [];
     this.matingpool = [];
-    this.popsize = 100;
+    this.popsize = 50;
 
     for (let i = 0; i < this.popsize; ++i) {
       this.rockets.push(new Rocket());
     }
-    print("ONIT")
-    print(this.rockets)
   }
 
   evaluate() {
@@ -21,7 +19,7 @@ class Population {
     maximumFitness > 0
     ? this.rockets.forEach((rocket) => (rocket.fitness /= maximumFitness))
     : 0;
-    print("MAX FITNESS: " + round2Dec(maximumFitness));
+    print("MAX FITNESS: " + roundDec(maximumFitness, 5));
 
     // 2. establish the mating pool
     this.matingpool = [];

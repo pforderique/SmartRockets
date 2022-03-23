@@ -3,20 +3,14 @@ class Rocket {
     this.pos = createVector(width / 2, height);
     this.vel = createVector();
     this.acc = createVector();
-    this.fitness = 0;
-
     this.dna = dna ? dna : new DNA();
+    this.fitness = 0;
+    this.reachedGoal = false;
   }
 
   calculateFitness() {
-    let distance = dist(
-      this.pos.x,
-      this.pos.y,
-      target.target.x,
-      target.target.y
-    );
-    this.fitness = 1 / distance;
-
+    const distance = this.distanceToTarget();
+    this.fitness = distance === 0 ? Number.MAX_SAFE_INTEGER : 1 / distance;
     return this.fitness;
   }
 
@@ -25,8 +19,13 @@ class Rocket {
   }
 
   update() {
+    const reachedThreshold = 10;
+    if (this.distanceToTarget() < reachedThreshold) {
+      this.completed = true;
+      this.pos = target.target.copy();
+      return;
+    }
     this.applyForce(this.dna.genes[lifeCount]);
-    this.count++;
 
     this.vel.add(this.acc);
     this.pos.add(this.vel);
@@ -55,5 +54,14 @@ class Rocket {
       0
     ); // tip
     pop();
+  }
+
+  distanceToTarget() {
+    return dist(
+      this.pos.x,
+      this.pos.y,
+      target.target.x,
+      target.target.y
+    );
   }
 }

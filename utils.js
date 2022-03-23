@@ -3,6 +3,7 @@ function randChoice(choices) {
   return choices[index];
 }
 
-function round2Dec(number) {
-  return Math.round(number * 100) / 100;
+function roundDec(number, places) {
+  const multiplier = Math.pow(10, places);
+  return Math.round(number * multiplier) / multiplier;
 }
