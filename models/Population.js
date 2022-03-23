@@ -11,14 +11,14 @@ class Population {
 
   evaluate() {
     // 1. calculate the fitness of every member in the population and normalize
-    let maximumFitness = 0
-    this.rockets.forEach(rocket => {
-        maximumFitness = Math.max(maximumFitness, rocket.calculateFitness())
-    })
+    let maximumFitness = 0;
+    this.rockets.forEach((rocket) => {
+      maximumFitness = Math.max(maximumFitness, rocket.calculateFitness());
+    });
 
     maximumFitness > 0
-    ? this.rockets.forEach((rocket) => (rocket.fitness /= maximumFitness))
-    : 0;
+      ? this.rockets.forEach((rocket) => (rocket.fitness /= maximumFitness))
+      : 0;
     print("MAX FITNESS: " + roundDec(maximumFitness, 5));
 
     // 2. establish the mating pool
@@ -44,14 +44,10 @@ class Population {
   }
 
   update() {
-    for (let i = 0; i < this.popsize; ++i) {
-      this.rockets[i].update();
-    }
+    this.rockets.forEach((rocket) => rocket.update());
   }
 
   show() {
-    for (let i = 0; i < this.popsize; ++i) {
-      this.rockets[i].show();
-    }
+    this.rockets.forEach((rocket) => rocket.show());
   }
 }

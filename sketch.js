@@ -10,15 +10,15 @@ let genPar;
 let lifePar;
 
 const states = {
-	WELCOME: "summer",
-	SIMULATION: "winter",
-	OBSTACLE: "spring",
-}
+  WELCOME: "summer",
+  SIMULATION: "winter",
+  OBSTACLE: "spring",
+};
 
 function setup() {
   createCanvas(500, 500);
   population = new Population();
-  target = new Target();
+  target = new Target(50,50);
   state = states.SIMULATION;
   genPar = createP();
   lifePar = createP();
@@ -32,14 +32,9 @@ function draw() {
       population.update();
       updateSimulation();
       break;
-    
+
     case states.OBSTACLE:
-      // draw the obstacle
-      push();
-      stroke(255);
-      strokeWeight(1);
-      line(obstacleStartX, obstacleStartY, mouseX, mouseY);
-      pop();
+      drawObstacle(obstacleStartX, obstacleStartY, mouseX, mouseY);
       break;
   }
 
@@ -50,7 +45,7 @@ function draw() {
 }
 
 function updateSimulation() {
-  if(lifeCount++ === lifespan) {
+  if (lifeCount++ === lifespan) {
     generation++;
     lifeCount = 0;
     population.evaluate();
@@ -72,6 +67,7 @@ function mouseReleased() {
   switch (state) {
     case states.OBSTACLE:
       state = states.SIMULATION;
+      //TODO: save the obstacle in array of obstacles
       break;
   }
 }
