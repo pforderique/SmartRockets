@@ -36,6 +36,9 @@ class Population {
       const parentB = randChoice(this.matingpool).dna;
       const childDNA = parentA.crossover(parentB);
 
+      // go through genes of DNA and randomly mutate
+      childDNA.mutation();
+
       return new Rocket(childDNA);
     });
   }
