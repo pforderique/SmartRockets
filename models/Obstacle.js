@@ -6,10 +6,6 @@ class Obstacle {
     this.y2 = y2;
   }
 
-  collidesWith(rocket) {
-    // TODO: check if line and rect intersect using stackoverflow 
-  }
-
   show() {
     drawObstacle(this.x1, this.y1, this.x2, this.y2);
   }

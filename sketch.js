@@ -1,18 +1,18 @@
 let population;
 let target;
+let obstacles = [];
 let lifeCount = 0;
-let lifespan = 200;
+let lifespan = 400;
 let generation = 1;
 let state;
-let mouseDown = false;
 let obstacleStartX, obstacleStartY;
 let genPar;
 let lifePar;
 
 const states = {
-  WELCOME: "summer",
-  SIMULATION: "winter",
-  OBSTACLE: "spring",
+  WELCOME: 0,
+  SIMULATION: 1,
+  OBSTACLE: 2,
 };
 
 function setup() {
@@ -40,6 +40,7 @@ function draw() {
 
   population.show();
   target.show();
+  obstacles.forEach(obstacle => obstacle.show());
   genPar.html("Generation: " + generation);
   lifePar.html("Life Count: " + lifeCount);
 }
@@ -67,7 +68,9 @@ function mouseReleased() {
   switch (state) {
     case states.OBSTACLE:
       state = states.SIMULATION;
-      //TODO: save the obstacle in array of obstacles
+      obstacles.push(
+        new Obstacle(obstacleStartX, obstacleStartY, mouseX, mouseY));
+      print(obstacles)
       break;
   }
 }
