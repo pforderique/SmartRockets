@@ -8,8 +8,9 @@ class Rocket {
     // init genetic & simulation information
     this.dna = dna ? dna : new DNA();
     this.fitness = 0;
-    this.completed = false;
     this.crashed = false;
+    this.succeeded = false;
+    this.successTimer = undefined;
 
     // init physical features
     this.bodyWidth = 5;
@@ -19,8 +20,22 @@ class Rocket {
   }
 
   calculateFitness() {
+    const crashPenalty = 0.05; // reduce 95% of fitness
+    const successGain = 2; // double fitness of those who reached
+
+    // normally, fitness = inverse of distance to target
     const distance = this.distanceToTarget();
     this.fitness = distance === 0 ? Number.MAX_SAFE_INTEGER : 1 / distance;
+
+    // plus a time metric
+    if (this.succeeded) this.fitness += 1 / this.successTimer;
+
+    // reduce the fitness of rockets that have crashed!
+    if (this.crashed) this.fitness *= crashPenalty;
+
+    // but if we reached target, scale up
+    if (this.succeeded) this.fitness *= successGain;
+
     return this.fitness;
   }
 
@@ -31,13 +46,16 @@ class Rocket {
   update() {
     const reachedThreshold = 6;
 
-    // check if rocket reached target
-    if (this.completed || this.distanceToTarget() < reachedThreshold) {
-      this.completed = true;
-      // this.pos = target.target.copy();
+    // check if previously succeeded or crashed
+    if (this.succeeded || this.crashed) return;
+
+    // check if rocket reached target for the first time
+    if (this.succeeded || this.distanceToTarget() < reachedThreshold) {
+      this.succeeded = true;
+      this.successTimer = lifeCount; // record the amount of time it takes to get there
       return;
     }
-    // check if rocket crashed
+    // check if rocket crashed for the first time
     if (this.crashed || this.checkCollision()) {
       this.crashed = true;
       return;
@@ -55,24 +73,31 @@ class Rocket {
   updateHitLine() {
     // make titled my guy
     const angle = this.vel.heading();
-    const p1Rotated = rotatePoint({x: this.pos.x - this.bodyHeight/2, y: this.pos.y}, this.pos, angle);
-    const p2Rotated = rotatePoint({x: this.pos.x + this.bodyHeight/2, y: this.pos.y}, this.pos, angle);
+    const p1Rotated = rotatePoint(
+      { x: this.pos.x - this.bodyHeight / 2, y: this.pos.y },
+      this.pos,
+      angle
+    );
+    const p2Rotated = rotatePoint(
+      { x: this.pos.x + this.bodyHeight / 2, y: this.pos.y },
+      this.pos,
+      angle
+    );
     this.bodyCrossSegment = {
       x1: p1Rotated.x,
       y1: p1Rotated.y,
       x2: p2Rotated.x,
-      y2: p2Rotated.y
-    }
+      y2: p2Rotated.y,
+    };
   }
 
   show() {
-
     push();
     noStroke();
     // color red if crashed, else white
     this.crashed ? fill(220, 20, 0, 150) : fill(255, 150);
     // color green if reached target
-    this.completed ? fill(20, 220, 0, 150) : 0;
+    this.succeeded ? fill(20, 220, 0, 150) : 0;
     // translate to make drawing easier
     translate(this.pos.x, this.pos.y);
     rotate(this.vel.heading());
@@ -100,7 +125,7 @@ class Rocket {
     obstacles.forEach((obstacle) => {
       // get each cross side of this rocket
       // defined as line segment from top right to bottom left
-      if(lineSegmentsIntersect(obstacle, this.bodyCrossSegment)) {
+      if (lineSegmentsIntersect(obstacle, this.bodyCrossSegment)) {
         collidesWithObstacle = true;
       }
     });
@@ -109,7 +134,7 @@ class Rocket {
     return (
       collidesWithObstacle ||
       this.pos.x <= 0 ||
-      this.pos.y >= width ||
+      this.pos.x >= width ||
       this.pos.y <= 0 ||
       this.pos.y >= height
     );

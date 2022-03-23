@@ -2,8 +2,9 @@ let population;
 let target;
 let obstacles = [];
 let lifeCount = 0;
-let lifespan = 400;
+let lifespan = 300;
 let generation = 1;
+let maxForce = 0.15;
 let state;
 let obstacleStartX, obstacleStartY;
 let genPar;
@@ -18,7 +19,7 @@ const states = {
 function setup() {
   createCanvas(500, 500);
   population = new Population();
-  target = new Target(50,50);
+  target = new Target();
   state = states.SIMULATION;
   genPar = createP();
   lifePar = createP();
@@ -40,7 +41,7 @@ function draw() {
 
   population.show();
   target.show();
-  obstacles.forEach(obstacle => obstacle.show());
+  obstacles.forEach((obstacle) => obstacle.show());
   genPar.html("Generation: " + generation);
   lifePar.html("Life Count: " + lifeCount);
 }
@@ -69,8 +70,9 @@ function mouseReleased() {
     case states.OBSTACLE:
       state = states.SIMULATION;
       obstacles.push(
-        new Obstacle(obstacleStartX, obstacleStartY, mouseX, mouseY));
-      print(obstacles)
+        new Obstacle(obstacleStartX, obstacleStartY, mouseX, mouseY)
+      );
+      print(obstacles);
       break;
   }
 }
