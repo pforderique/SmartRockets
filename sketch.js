@@ -1,17 +1,19 @@
 let population;
 let target;
-let obstacles = [];
-let lifeCount = 0;
-let generation = 1;
-let maxForce = 0.15;
-let currentLifespan;
 let state;
+let obstacles;
+let mutationRate;
+let generation;
+let lifeCount;
+let maxForce;
+let currentLifespan;
 let obstacleStartX, obstacleStartY;
-let bestFitnessSeen = 0;
+let bestFitnessSeen;
 
 // DOM elements
 let lifespanLabel;
 let lifespanSlider;
+let mutationSlider;
 let statsButton;
 
 const states = {
@@ -23,22 +25,30 @@ const states = {
 
 function setup() {
   const windowSize = 500;
+  const minMutationRate = 0;
+  const maxMutationRate = 0.1;
   const minLifespan = 100;
   const maxLifespan = 800;
   currentLifespan = 200;
 
   // simulation setup
   createCanvas(windowSize, windowSize);
+  state = states.SIMULATION;
+  obstacles = [];
+  mutationRate = 0.01;
+  maxForce = 0.15;
+  generation = 1;
+  lifeCount = 0;
+  bestFitnessSeen = 0
   population = new Population();
   target = new Target();
-  state = states.SIMULATION;
   
   // UI and controls
-  const lifespanLabel = createDiv(`Lifespan (${minLifespan}-${maxLifespan})`);
-  lifespanLabel.style('display', 'flex').style('align-items', 'center');
-  lifespanSlider = createSlider(minLifespan, maxLifespan, currentLifespan, 50);
-  lifespanSlider.style('width', `${windowSize/4}px`);
-  lifespanSlider.parent(lifespanLabel);
+  const lifespanLabel = createDiv(`Lifespan (${minLifespan}-${maxLifespan})`).style('display', 'flex').style('align-items', 'center');
+  lifespanSlider = createSlider(minLifespan, maxLifespan, currentLifespan, 50).style('width', `${windowSize/4}px`).parent(lifespanLabel);
+
+  const mutationLabel = createDiv(`Mutation Rate`);
+  mutationSlider = createSlider(minMutationRate, maxMutationRate, mutationRate, 0.005).style('width', `${windowSize/10}px`).parent(mutationLabel);
 
   const buttonDiv = createDiv('');
   buttonDiv.style('display', 'flex').style('justify-content', 'space-around');
@@ -64,6 +74,7 @@ function draw() {
   target.show();
   obstacles.forEach((obstacle) => obstacle.show());
   updateCursor(); // shows correct cursor
+  mutationRate = mutationSlider.value(); // update mutationRate
   if (statsButton.checked()) showStats();
 }
 

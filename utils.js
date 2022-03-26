@@ -38,21 +38,22 @@ function updateCursor() {
 function showStats() {
   const posx = 10;
   const posy = 30;
-  const spacing = 10;
+  const spacing = textAscent() + 10;
   const size = 15;
 
   push();
   fill(255);
   textSize(size);
-  text(`Lifespan: ${lifeCount}/${currentLifespan}` , posx, posy);
-  text("Generation: " + generation, posx, posy + textAscent() + spacing);
+  text(`Lifespan: ${lifeCount}/${currentLifespan}`, posx, posy);
+  text("Generation: " + generation, posx, posy + spacing);
 
   textAlign(RIGHT);
   text(
-    "Best Fitness Seen:\n" + roundDec(bestFitnessSeen, 5),
+    "Best Fitness Seen: " + roundDec(bestFitnessSeen, 0),
     width - posx,
     posy
   );
+  text(`Mutation Rate: ${mutationRate}`, width - posx, posy + spacing);
   pop();
 }
 

@@ -1,7 +1,5 @@
 class DNA {
   constructor(newGenes = undefined) {
-    this.mutationRate = 0.01;
-
     if (newGenes) {
       this.genes = newGenes;
     } else {
@@ -28,7 +26,7 @@ class DNA {
   mutation() {
     this.genes = this.genes.map((gene) => {
       // for each gene in this DNA, decide to set it to a new random vector
-      if (random(1) < this.mutationRate) {
+      if (random(1) < mutationRate) {
         const newGene = p5.Vector.random2D();
         newGene.mult(maxForce);
         return newGene;

@@ -1,10 +1,10 @@
 class Population {
   constructor() {
+    const popsize = 200;
     this.rockets = [];
     this.matingpool = [];
-    this.popsize = 200;
 
-    for (let i = 0; i < this.popsize; ++i) {
+    for (let i = 0; i < popsize; ++i) {
       this.rockets.push(new Rocket());
     }
   }
