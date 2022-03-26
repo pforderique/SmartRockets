@@ -5,10 +5,10 @@ let lifeCount = 0;
 let lifespan = 300;
 let generation = 1;
 let maxForce = 0.15;
+let statsButton;
 let state;
 let obstacleStartX, obstacleStartY;
 let bestFitnessSeen = 0;
-let genPar, lifePar, fitnessPar;
 
 const states = {
   WELCOME: 0,
@@ -22,7 +22,7 @@ function setup() {
   population = new Population();
   target = new Target();
   state = states.SIMULATION;
-  [genPar, lifePar, fitnessPar] = [createP(), createP(), createP()];
+  statsButton = createCheckbox('show stats', true);
 }
 
 function draw() {
@@ -43,9 +43,7 @@ function draw() {
   target.show();
   obstacles.forEach((obstacle) => obstacle.show());
   updateCursor(); // shows correct cursor
-  genPar.html("Generation: " + generation);
-  lifePar.html("Life Count: " + lifeCount);
-  fitnessPar.html("Best Fitness Seen: " + roundDec(bestFitnessSeen, 5));
+  if (statsButton.checked()) showStats();
 }
 
 function updateSimulation() {
@@ -58,6 +56,10 @@ function updateSimulation() {
 }
 
 function mousePressed() {
+  // these mouse function are not intended to activate with
+  // other DOM element interactions
+  if(!mouseInBounds()) return;
+
   switch (state) {
     case states.SIMULATION:
       if (mouseOverTarget()) {

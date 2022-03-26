@@ -16,6 +16,11 @@ function drawObstacle(x1, y1, x2, y2) {
   pop();
 }
 
+// true iff mouse in bounds of the display
+function mouseInBounds() {
+  return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
+}
+
 // true iff mouse over target, else false
 function mouseOverTarget() {
   return (
@@ -27,6 +32,28 @@ function mouseOverTarget() {
 // show the correct cursor icon depending on state and location
 function updateCursor() {
   mouseOverTarget() ? cursor("grab") : cursor("default");
+}
+
+// show the current stats (generation, life count, etc.) of simulation
+function showStats() {
+  const posx = 10;
+  const posy = 30;
+  const spacing = 10;
+  const size = 15;
+
+  push();
+  fill(255);
+  textSize(size);
+  text("Generation: " + generation, posx, posy);
+  text("Life Count: " + lifeCount, posx, posy + textAscent() + spacing);
+
+  textAlign(RIGHT);
+  text(
+    "Best Fitness Seen:\n" + roundDec(bestFitnessSeen, 5),
+    width - posx,
+    posy
+  );
+  pop();
 }
 
 // source: https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
