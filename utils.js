@@ -44,8 +44,8 @@ function showStats() {
   push();
   fill(255);
   textSize(size);
-  text("Generation: " + generation, posx, posy);
-  text("Life Count: " + lifeCount, posx, posy + textAscent() + spacing);
+  text(`Lifespan: ${lifeCount}/${currentLifespan}` , posx, posy);
+  text("Generation: " + generation, posx, posy + textAscent() + spacing);
 
   textAlign(RIGHT);
   text(
@@ -54,6 +54,16 @@ function showStats() {
     posy
   );
   pop();
+}
+
+// shuffles an array by mutation
+// source: https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
+function shuffleArray(array) {
+  for (let idx = array.length - 1; idx > 0; idx--) {
+    // swap each idx in array with random idx
+    const randIdx = Math.floor(Math.random() * (i + 1));
+    [array[idx], array[randIdx]] = [array[randIdx], array[idx]];
+  }
 }
 
 // source: https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
@@ -77,10 +87,6 @@ function lineSegmentsIntersect(line1, line2) {
 // both `point` and `origin` must have x1, x2, y1, and y2 fields
 // angle in radians
 function rotatePoint(point, origin, angle) {
-  // return {
-  //   x: point.x,
-  //   y: point.y
-  // }
   return {
     x:
       (point.x - origin.x) * Math.cos(angle) -

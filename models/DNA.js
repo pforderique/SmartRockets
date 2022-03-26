@@ -6,7 +6,7 @@ class DNA {
       this.genes = newGenes;
     } else {
       this.genes = [];
-      for (let i = 0; i < lifespan; ++i) {
+      for (let i = 0; i < currentLifespan; ++i) {
         this.genes[i] = p5.Vector.random2D();
         // this.genes[i].setMag(maxForce);
         this.genes[i].mult(maxForce);
@@ -36,5 +36,21 @@ class DNA {
         return gene;
       }
     });
+  }
+
+  // updates the lifespan of the population with integer `lifespan`
+  setLifespan(newLifespan) {
+    const currentSpan = this.genes.length;
+
+    // slice the genes to shorter copy
+    if (newLifespan < currentSpan) {
+      this.genes = this.genes.slice(0, newLifespan);
+      return;
+    }
+    // or add new random genes
+    for (let i = currentSpan; i < newLifespan; ++i) {
+      this.genes[i] = p5.Vector.random2D();
+      this.genes[i].mult(maxForce);
+    }
   }
 }

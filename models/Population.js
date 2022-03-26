@@ -9,6 +9,7 @@ class Population {
     }
   }
 
+  // evaluates the fitness of each memeber
   evaluate() {
     // 1. calculate the fitness of every member in the population and normalize
     let maximumFitness = 0;
@@ -20,18 +21,21 @@ class Population {
       ? this.rockets.forEach((rocket) => (rocket.fitness /= maximumFitness))
       : 0;
     bestFitnessSeen = max(bestFitnessSeen, maximumFitness);
-    print("Max fitness: " + roundDec(maximumFitness, 5));
+    print(`Generation ${generation} max fitness: ${roundDec(maximumFitness, 5)}`);
+  }
 
-    // 2. establish the mating pool
+  // create the mating pool based on rocket fitness' and create new population
+  // based on mating
+  selection() {
+    // establish the mating pool
     this.matingpool = [];
     this.rockets.forEach((rocket) => {
       for (let i = 0; i < rocket.fitness * 100; ++i) {
         this.matingpool.push(rocket);
       }
     });
-  }
 
-  selection() {
+    // mating algorithm
     this.rockets = this.rockets.map((_) => {
       const parentA = randChoice(this.matingpool).dna;
       const parentB = randChoice(this.matingpool).dna;
@@ -42,6 +46,10 @@ class Population {
 
       return new Rocket(childDNA);
     });
+  }
+
+  setLifespan(newLifespan) {
+    this.rockets.forEach((rocket) => rocket.dna.setLifespan(newLifespan));
   }
 
   update() {

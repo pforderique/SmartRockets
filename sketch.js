@@ -2,14 +2,17 @@ let population;
 let target;
 let obstacles = [];
 let lifeCount = 0;
-let lifespan = 300;
 let generation = 1;
 let maxForce = 0.15;
-let lifespanSlider;
-let statsButton;
+let currentLifespan;
 let state;
 let obstacleStartX, obstacleStartY;
 let bestFitnessSeen = 0;
+
+// DOM elements
+let lifespanLabel;
+let lifespanSlider;
+let statsButton;
 
 const states = {
   WELCOME: 0,
@@ -19,16 +22,28 @@ const states = {
 };
 
 function setup() {
+  const windowSize = 500;
   const minLifespan = 100;
-  const maxLifespan = 1000;
-  const initialLifespan = 200;
+  const maxLifespan = 800;
+  currentLifespan = 200;
 
-  createCanvas(500, 500);
+  // simulation setup
+  createCanvas(windowSize, windowSize);
   population = new Population();
   target = new Target();
   state = states.SIMULATION;
+  
+  // UI and controls
+  const lifespanLabel = createDiv(`Lifespan (${minLifespan}-${maxLifespan})`);
+  lifespanLabel.style('display', 'flex').style('align-items', 'center');
+  lifespanSlider = createSlider(minLifespan, maxLifespan, currentLifespan, 50);
+  lifespanSlider.style('width', `${windowSize/4}px`);
+  lifespanSlider.parent(lifespanLabel);
+
+  const buttonDiv = createDiv('');
+  buttonDiv.style('display', 'flex').style('justify-content', 'space-around');
   statsButton = createCheckbox('show stats', true);
-  lifespanSlider = createSlider(minLifespan, maxLifespan, initialLifespan);
+  statsButton.parent(buttonDiv);
 }
 
 function draw() {
@@ -53,12 +68,22 @@ function draw() {
 }
 
 function updateSimulation() {
-  if (lifeCount++ === lifespan) {
-    generation++;
-    lifeCount = 0;
-    population.evaluate();
-    population.selection();
+  // if (lifeCount++ !== lifespan) return;
+  if (lifeCount++ !== currentLifespan) return;
+
+  const lifespanSliderValue = lifespanSlider.value();
+  generation++;
+  lifeCount = 0;
+
+  // check if lifespan slider was moved
+  if (lifespanSliderValue !== currentLifespan) {
+    population.setLifespan(lifespanSliderValue);
+    currentLifespan = lifespanSliderValue;
   }
+
+  // genetically create the new population
+  population.evaluate();
+  population.selection();
 }
 
 function mousePressed() {
