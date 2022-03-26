@@ -57,6 +57,49 @@ function showStats() {
   pop();
 }
 
+// shows the UI controls attached to DOM
+function setupUIControls() {
+  const minMutationRate = 0;
+  const maxMutationRate = 0.1;
+  const minLifespan = 50;
+  const maxLifespan = 800;
+
+  const topControlsDiv = createDiv("")
+    .style("width", `${windowSize}px`)
+    .style("display", "flex")
+    .style("align-items", "center")
+    .style("justify-content", "space-between");
+  const bottomControlsDiv = createDiv("")
+    .style("width", `${windowSize}px`)
+    .style("display", "flex")
+    .style("align-items", "center")
+    .style("justify-content", "space-between");
+
+  const lifespanLabel = createDiv(`Lifespan (${minLifespan}-${maxLifespan})`)
+    .style("display", "flex")
+    .style("align-items", "center")
+    .parent(topControlsDiv);
+  lifespanSlider = createSlider(minLifespan, maxLifespan, currentLifespan, 50)
+    .style("width", `${windowSize / 4}px`)
+    .parent(lifespanLabel);
+
+  const mutationLabel = createDiv(`Mutation Rate`)
+    .style("display", "flex")
+    .style("align-items", "center")
+    .parent(bottomControlsDiv);
+  mutationSlider = createSlider(
+    minMutationRate,
+    maxMutationRate,
+    mutationRate,
+    0.005
+  )
+    .style("width", `${windowSize / 10}px`)
+    .parent(mutationLabel);
+
+  statsButton = createCheckbox("show stats", true).parent(topControlsDiv);
+  showOneButton = createCheckbox("show best", false).parent(bottomControlsDiv);
+}
+
 // shuffles an array by mutation
 // source: https://dev.to/codebubb/how-to-shuffle-an-array-in-javascript-2ikj
 function shuffleArray(array) {

@@ -1,8 +1,9 @@
 class Population {
   constructor() {
-    const popsize = 200;
+    const popsize = 300;
     this.rockets = [];
     this.matingpool = [];
+    this.prevBestRocket = new Rocket(); // random rocket
 
     for (let i = 0; i < popsize; ++i) {
       this.rockets.push(new Rocket());
@@ -11,17 +12,23 @@ class Population {
 
   // evaluates the fitness of each memeber
   evaluate() {
-    // 1. calculate the fitness of every member in the population and normalize
+    // calculate the fitness of every member in the population and normalize
     let maximumFitness = 0;
     this.rockets.forEach((rocket) => {
-      maximumFitness = Math.max(maximumFitness, rocket.calculateFitness());
+      const rocketFitness = rocket.calculateFitness();
+      if (maximumFitness < rocketFitness) {
+        maximumFitness = rocketFitness;
+        this.prevBestRocket = rocket; // update the best rocket of this gen
+      }
     });
 
-    maximumFitness > 0
-      ? this.rockets.forEach((rocket) => (rocket.fitness /= maximumFitness))
-      : 0;
+    if (maximumFitness > 0)
+      this.rockets.forEach((rocket) => (rocket.fitness /= maximumFitness));
+
     bestFitnessSeen = max(bestFitnessSeen, maximumFitness);
-    print(`Generation ${generation} max fitness: ${roundDec(maximumFitness, 5)}`);
+    print(
+      `Generation ${generation} max fitness: ${roundDec(maximumFitness, 5)}`
+    );
   }
 
   // create the mating pool based on rocket fitness' and create new population

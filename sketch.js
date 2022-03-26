@@ -1,8 +1,10 @@
+let windowSize = 500;
 let population;
 let target;
 let state;
 let obstacles;
 let mutationRate;
+let prevBestRocket;
 let generation;
 let lifeCount;
 let maxForce;
@@ -15,6 +17,7 @@ let lifespanLabel;
 let lifespanSlider;
 let mutationSlider;
 let statsButton;
+let showOneButton;
 
 const states = {
   WELCOME: 0,
@@ -24,11 +27,6 @@ const states = {
 };
 
 function setup() {
-  const windowSize = 500;
-  const minMutationRate = 0;
-  const maxMutationRate = 0.1;
-  const minLifespan = 100;
-  const maxLifespan = 800;
   currentLifespan = 200;
 
   // simulation setup
@@ -36,24 +34,16 @@ function setup() {
   state = states.SIMULATION;
   obstacles = [];
   mutationRate = 0.01;
-  maxForce = 0.15;
+  maxForce = 0.5;
   generation = 1;
   lifeCount = 0;
-  bestFitnessSeen = 0
+  bestFitnessSeen = 0;
   population = new Population();
   target = new Target();
-  
+  prevBestRocket = new Rocket();
+
   // UI and controls
-  const lifespanLabel = createDiv(`Lifespan (${minLifespan}-${maxLifespan})`).style('display', 'flex').style('align-items', 'center');
-  lifespanSlider = createSlider(minLifespan, maxLifespan, currentLifespan, 50).style('width', `${windowSize/4}px`).parent(lifespanLabel);
-
-  const mutationLabel = createDiv(`Mutation Rate`);
-  mutationSlider = createSlider(minMutationRate, maxMutationRate, mutationRate, 0.005).style('width', `${windowSize/10}px`).parent(mutationLabel);
-
-  const buttonDiv = createDiv('');
-  buttonDiv.style('display', 'flex').style('justify-content', 'space-around');
-  statsButton = createCheckbox('show stats', true);
-  statsButton.parent(buttonDiv);
+  setupUIControls();
 }
 
 function draw() {
@@ -62,6 +52,7 @@ function draw() {
   switch (state) {
     case states.SIMULATION:
       population.update();
+      prevBestRocket.update();
       updateSimulation();
       break;
 
@@ -70,7 +61,8 @@ function draw() {
       break;
   }
 
-  population.show();
+  // either show the best parent rocket from previous gen, or current population
+  showOneButton.checked() ? prevBestRocket.show() : population.show();
   target.show();
   obstacles.forEach((obstacle) => obstacle.show());
   updateCursor(); // shows correct cursor
@@ -79,7 +71,7 @@ function draw() {
 }
 
 function updateSimulation() {
-  // if (lifeCount++ !== lifespan) return;
+  // only update these values at the end of every life cycle
   if (lifeCount++ !== currentLifespan) return;
 
   const lifespanSliderValue = lifespanSlider.value();
@@ -92,6 +84,10 @@ function updateSimulation() {
     currentLifespan = lifespanSliderValue;
   }
 
+  // update best rocket produced
+  prevBestRocket = population.prevBestRocket;
+  prevBestRocket.resetRocket();
+
   // genetically create the new population
   population.evaluate();
   population.selection();
@@ -100,7 +96,7 @@ function updateSimulation() {
 function mousePressed() {
   // these mouse function are not intended to activate with
   // other DOM element interactions
-  if(!mouseInBounds()) return;
+  if (!mouseInBounds()) return;
 
   switch (state) {
     case states.SIMULATION:

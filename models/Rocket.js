@@ -1,7 +1,9 @@
 class Rocket {
   constructor(dna = undefined) {
     // init physics
-    this.pos = createVector(width / 2, height - 1);
+    this.initalX = width/2;
+    this.initalY = height - 1;
+    this.pos = createVector(this.initalX, this.initalY);
     this.vel = createVector();
     this.acc = createVector();
 
@@ -44,7 +46,7 @@ class Rocket {
   }
 
   update() {
-    const reachedThreshold = 6;
+    const reachedThreshold = target.radius - 2;
 
     // check if previously succeeded or crashed
     if (this.succeeded || this.crashed) return;
@@ -60,6 +62,9 @@ class Rocket {
       this.crashed = true;
       return;
     }
+
+    // stop all movement if lifetime over
+    if(lifeCount > currentLifespan) return this.resetRocket();
 
     // update movement
     this.applyForce(this.dna.genes[lifeCount]);
@@ -138,6 +143,17 @@ class Rocket {
       this.pos.y <= 0 ||
       this.pos.y >= height
     );
+  }
+
+  // start rocket at initial place again
+  resetRocket() {
+    this.pos = createVector(this.initalX, this.initalY);
+    this.vel.mult(0);
+    this.acc.mult(0);
+    this.updateHitLine();
+
+    this.crashed = false;
+    this.succeeded = false;
   }
 
   distanceToTarget() {
