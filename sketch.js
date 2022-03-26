@@ -5,6 +5,7 @@ let lifeCount = 0;
 let lifespan = 300;
 let generation = 1;
 let maxForce = 0.15;
+let lifespanSlider;
 let statsButton;
 let state;
 let obstacleStartX, obstacleStartY;
@@ -18,11 +19,16 @@ const states = {
 };
 
 function setup() {
+  const minLifespan = 100;
+  const maxLifespan = 1000;
+  const initialLifespan = 200;
+
   createCanvas(500, 500);
   population = new Population();
   target = new Target();
   state = states.SIMULATION;
   statsButton = createCheckbox('show stats', true);
+  lifespanSlider = createSlider(minLifespan, maxLifespan, initialLifespan);
 }
 
 function draw() {
