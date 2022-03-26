@@ -8,12 +8,13 @@ let maxForce = 0.15;
 let state;
 let obstacleStartX, obstacleStartY;
 let bestFitnessSeen = 0;
-let genPar, lifePar, fitnessPar
+let genPar, lifePar, fitnessPar;
 
 const states = {
   WELCOME: 0,
   SIMULATION: 1,
   OBSTACLE: 2,
+  TARGETMOVE: 3,
 };
 
 function setup() {
@@ -21,7 +22,7 @@ function setup() {
   population = new Population();
   target = new Target();
   state = states.SIMULATION;
-  [genPar, lifePar, fitnessPar] = [createP(), createP(), createP()]; 
+  [genPar, lifePar, fitnessPar] = [createP(), createP(), createP()];
 }
 
 function draw() {
@@ -41,6 +42,7 @@ function draw() {
   population.show();
   target.show();
   obstacles.forEach((obstacle) => obstacle.show());
+  updateCursor(); // shows correct cursor
   genPar.html("Generation: " + generation);
   lifePar.html("Life Count: " + lifeCount);
   fitnessPar.html("Best Fitness Seen: " + roundDec(bestFitnessSeen, 5));
@@ -58,6 +60,10 @@ function updateSimulation() {
 function mousePressed() {
   switch (state) {
     case states.SIMULATION:
+      if (mouseOverTarget()) {
+        state = states.TARGETMOVE;
+        return;
+      }
       state = states.OBSTACLE;
       obstacleStartX = mouseX;
       obstacleStartY = mouseY;
@@ -65,13 +71,31 @@ function mousePressed() {
   }
 }
 
+function mouseDragged() {
+  switch (state) {
+    case states.TARGETMOVE:
+      // target follows mouse but does nto go beyond border
+      target.target = createVector(
+        max(0, min(mouseX, width)),
+        max(0, min(mouseY, height))
+      );
+      break;
+  }
+}
+
 function mouseReleased() {
   switch (state) {
+    // create a new obstacle in simulation
     case states.OBSTACLE:
       state = states.SIMULATION;
       obstacles.push(
         new Obstacle(obstacleStartX, obstacleStartY, mouseX, mouseY)
       );
+      break;
+
+    // finalize target location
+    case states.TARGETMOVE:
+      state = states.SIMULATION;
       break;
   }
 }

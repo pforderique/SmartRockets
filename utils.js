@@ -16,6 +16,19 @@ function drawObstacle(x1, y1, x2, y2) {
   pop();
 }
 
+// true iff mouse over target, else false
+function mouseOverTarget() {
+  return (
+    abs(mouseX - target.target.x) < target.radius &&
+    abs(mouseY - target.target.y) < target.radius
+  );
+}
+
+// show the correct cursor icon depending on state and location
+function updateCursor() {
+  mouseOverTarget() ? cursor("grab") : cursor("default");
+}
+
 // source: https://bryceboe.com/2006/10/23/line-segment-intersection-algorithm/
 function ccw(p1, p2, p3) {
   return (p3.y - p1.y) * (p2.x - p1.x) > (p2.y - p1.y) * (p3.x - p1.x);

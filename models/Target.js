@@ -1,13 +1,13 @@
 class Target {
   constructor(x = width / 2, y = 50) {
     this.target = createVector(x, y);
+    this.radius = 16;
   }
 
   show() {
-    const size = 16;
     push();
     fill(50, 100, 210);
-    ellipse(this.target.x, this.target.y, size, size);
+    ellipse(this.target.x, this.target.y, this.radius, this.radius);
     pop();
   }
 }
